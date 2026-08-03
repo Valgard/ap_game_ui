@@ -285,8 +285,11 @@ recurring shapes to recognize — an open list, not a taxonomy:
    neutral sans, sparse monoline icons, thin progress bars. The contemporary
    "tasteful" default.
 
-Every one of them is legitimate for some brief. What marks them as defaults rather
-than choices is that they appear regardless of the game.
+Every one of them is legitimate for some brief. What marks a look as a default rather
+than a choice is that **nothing in it points at this subject** — the same treatment
+would serve a farming sim and a survival horror equally well. That is a claim about
+how the look was arrived at, not a measured claim about how often it occurs in game
+UI at large.
 
 **No frequency claim is made.** There is no corpus behind this list; it is a set
 of shapes to recognize, not a ranking. Cluster 5 warrants the most suspicion
