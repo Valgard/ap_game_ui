@@ -166,9 +166,21 @@ Two properties are intentional:
    skill brings the mechanics layer, so the choice hangs on the mode axis alone
    and not on which description happens to carry the matching keyword.
 
-## Mode directive — the divergent part
+## What is shared and what is mode-specific
 
-Only this block differs between the skills.
+**Shared verbatim by both skills:** the mechanics layer (`docs/`), the process
+skeleton, restraint and screenshot self-critique, and the UX-writing section.
+
+**Mode-specific:**
+
+| Element | `game-ui-design` | `game-ui-modding` |
+|---|---|---|
+| Mode directive (table below) | own form | host form |
+| Verification gate | reduced: no host to measure, but the mechanics layer still needs in-game checks | full: the host is the reference, so measurement is the core operation |
+| Host-constraint section | present, for the overhaul case | not needed — the whole skill is about the host |
+| UX-writing voice | its own | the host's |
+
+## Mode directive — the divergent part
 
 | | `game-ui-design` | `game-ui-modding` |
 |---|---|---|
@@ -185,22 +197,51 @@ greenfield fails as **generic** (reaching for a default look), modding fails as
 **recognizably foreign** (the model "improves" the host — rounder corners, higher
 contrast, a more modern panel — and the result reads as a mod instantly).
 
+### New content inside the host's grammar
+
+"Indistinguishable" binds the **grammar**, not the motif. A mod may add a
+subsystem with its own iconography, colour accent or diegetic conceit — a faction
+console, an in-fiction terminal, a screen belonging to one expansion — exactly as
+a vanilla game introduces a new interface of its own. What stays binding is the
+grammar: spacing grid, font, border weight, panel construction, interaction and
+focus conventions, button-prompt style.
+
+The test is therefore not "is anything new here" but **"would the host's own
+designers have built it this way"**. New motif inside the host's grammar passes.
+New grammar does not. Replacing the grammar wholesale is the overhaul case, and
+that belongs to `game-ui-design`.
+
+This closes the gap the binary would otherwise leave: a mod can be neither
+literally indistinguishable nor a full replacement, and without this rule such
+work would land on a success criterion it cannot satisfy.
+
 ### Anti-default calibration for `game-ui-design`
 
-The counterpart to the three web looks `frontend-design` names. AI-generated game
-UI clusters into four:
+The counterpart to the three web looks `frontend-design` names. These are the
+recurring shapes to recognize — an open list, not a taxonomy:
 
 1. **Sci-fi HUD** — semi-transparent dark panel, cyan glow outline, thin
-   technical all-caps sans, corner brackets as decoration. By far the most common.
+   technical all-caps sans, corner brackets as decoration.
 2. **Fantasy parchment** — beige texture, serif display, gold ornament frame,
    wax-seal buttons.
 3. **Mobile flat** — white icons on 60% black, thick rounded buttons, saturated
    green/red for yes/no, everything centered.
 4. **Indie retro pixel** — midnight-blue panel, 1px white outline, 8×8 bitmap
    font, hearts as a health meter.
+5. **Muted dark minimal** — desaturated dark cards, hairline dividers, restrained
+   neutral sans, sparse monoline icons, thin progress bars. The contemporary
+   "tasteful" default.
 
-All four are legitimate for some briefs. What marks them as defaults rather than
-choices is that they appear regardless of the game.
+Every one of them is legitimate for some brief. What marks them as defaults rather
+than choices is that they appear regardless of the game.
+
+**No frequency claim is made.** There is no corpus behind this list; it is a set
+of shapes to recognize, not a ranking. Cluster 5 warrants the most suspicion
+precisely because restraint reads as deliberation — it is the one most likely to
+survive a self-review that the other four would fail.
+
+**Keeping it current:** when a design passes self-review and still feels
+templated, name the shape and add it to this list.
 
 ## Shared mechanics layer (`docs/`)
 
@@ -213,6 +254,15 @@ the initial focus on open is a decision, never "nothing focused"; hover state an
 focus state are two states, not one; selection outside the viewport pulls the
 scroll along, computed pivot-correct; button prompts follow the active device;
 nothing reachable by hover only.
+
+The same file's second half is **text entry and input capture**, because the
+modding description explicitly covers added *fields*: while a field holds focus,
+gameplay input is suppressed — otherwise WASD walks the character while the player
+types; cancel priority is defined per nesting level (does Escape clear the field,
+close the panel, or open the pause menu?); IME and composition must work or CJK
+entry is impossible; a controller-only or handheld context needs an on-screen
+keyboard path; and every new binding is checked against the host's existing
+bindings before it is claimed.
 
 **`readability.md`** — comprehension budget as a design quantity (health must
 read in under a second, a crafting menu need not); text over a moving background
@@ -227,14 +277,21 @@ glitch": integer scaling and nearest-neighbour for pixel art; **texel snapping**
 **sorting** (a pipeline that sorts by Z rather than by layer makes equal Z values
 collide — visible as a colour or brightness fault, not as an ordering fault);
 reference resolution plus UI scale instead of absolute pixel sizes; atlas padding
-against bleeding.
+against bleeding. Reference resolution alone does not prevent clipping or an
+unusable composition, so the layout is checked at the ratios and scales the target
+platform actually ships: ultrawide 21:9 and 4:3 alongside 16:9, dynamic
+resolution, OS display scaling, and both ends of the game's own UI-scale slider.
 
 **`localization.md`** — German runs ~30% longer than English, so fixed boxes
 break there first; **glyph coverage** (an atlas or bitmap font has a fixed
 character set; one missing glyph silently swaps in a fallback face and breaks the
 look in place); no string concatenation; placeholders must be reorderable; plural
 rules are language-dependent; raw term keys in the UI are a registration fault,
-not a design problem.
+not a design problem. Beyond Latin scripts: right-to-left languages mirror the
+**layout**, not merely the text — focus order, icon direction and progress fill
+all invert; Arabic needs contextual shaping, which per-glyph atlas rendering
+breaks; CJK breaks lines per character rather than per word, invalidating
+word-wrap assumptions; and strings of mixed direction need their own test case.
 
 Three of these generalize findings from Core Keeper mod work: sprite distortion
 at positions exactly `k/16` is an instance of texel snapping; UI dimming at equal
@@ -255,7 +312,7 @@ The `frontend-design` sequence is kept; the first phase inverts.
 | | `game-ui-design` | `game-ui-modding` |
 |---|---|---|
 | 1 | **Invent**: palette, type, layout, signature — plus diegetic layer and input model | **Measure**: palette by pixel sample, spacing grid from existing panels, font as a finding, border weight, recognize the diegetic layer |
-| 2 | Self-review against the four default clusters | Fix the findings as a token table |
+| 2 | Self-review against the default clusters | Fix the findings as a token table, each value tagged with its provenance |
 | 3 | Build to the plan | Build **against the table** |
 | 4 | Screenshot critique: "is it unmistakable?" | Side by side with a vanilla screenshot: "does it stand out?" |
 
@@ -292,14 +349,43 @@ Confirm by observation before writing the token table:
       which glyphs the button prompts show per input device
 - [ ] Any decompiled finding traced through the whole chain, not a single link
 
+### The token table records provenance
+
+Every value carries how it was obtained, in the table itself:
+
+| token | value | provenance |
+|---|---|---|
+| `panel.bg` | `#1a2a2e` | measured — screenshot, crafting panel |
+| `border.w` | 2 px | measured — same panel, top edge |
+| `font.body` | host default | decompiled — chain traced to renderer |
+| `corner.r` | 0 | **ASSUMED** — no sample found |
+
+`ASSUMED` is a legal entry, and the only honest one where verification was not
+possible. What is never legal is an *unmarked* value: a guess formatted like a
+measurement is exactly the failure this gate exists to prevent.
+
+### When verification is not possible
+
+A build may not run, the platform or input device may not be at hand,
+decompilation may be unavailable or not permitted. Then:
+
+1. Mark every affected token `ASSUMED`, and say so in the answer — not only in the
+   table.
+2. Name what would settle it: "a screenshot of the crafting panel at UI scale 1.0
+   would confirm the border weight".
+3. Never upgrade an `ASSUMED` value later without the observation that earns it.
+
+Blocking on a missing build is wrong — the work proceeds. Presenting assumptions
+as findings is the failure mode.
+
 ### Decompiled sources, when available
 
 A decompiled build tells you *why* a value is what it is; observation only tells
 you *that* it is. Use both. But a decompiled finding counts only once the whole
 chain has been read — never a single link:
 
-    serialized asset / prefab value
-      → constructor / init
+    authored data (whatever the engine serializes it as)
+      → construction / initialization
       → runtime overrides (theme, settings, UI scale, localization)
       → renderer / shader / sorting
       → what actually reaches the screen
@@ -315,13 +401,26 @@ cannot be followed to the end, the finding is unconfirmed and measurement stands
 When an observation contradicts the table, the observation wins and the table
 changes. Never the other way round.
 
-Ship criterion: an A/B screenshot pair — host UI and yours, same scene, same
-scale. If you can tell which one is the mod, it is not done.
+**Visual** ship criterion: an A/B screenshot pair — host UI and yours, same scene,
+same scale. If you can tell which one is the mod, it is not done.
+
+This settles the visual axis and nothing else. A screenshot cannot show focus
+traversal, input capture, a fallback font under a different language, or
+readability in motion — each of those is settled by its own item in the checklist
+above, in the running game. The judgement is also not blind: it is a review
+heuristic, not a release certificate.
 ```
 
 The point of the last paragraph: the typical failure is not skipping the check,
 but running it, seeing it contradict the assumption, and explaining the
 difference away as measurement error.
+
+**The reduced variant in `game-ui-design`.** There is no host to measure, so
+provenance does not apply — but every constraint in the mechanics layer still
+needs an in-game check, and those checks are identical: focus traversal on a pad,
+the longest shipped language in the narrowest box, a sprite in motion, both ends of
+the UI-scale slider. Greenfield replaces the question "where did this value come
+from" with "does my own decision survive the constraints".
 
 ## `game-ui-design`: when the target is an existing game
 
@@ -349,7 +448,9 @@ A misrouted prompt is a description defect, not a user error.
 ## Scope
 
 - Each SKILL.md 100–150 lines (house convention is 93–232; `frontend-design` is 56).
-- Each `docs/` file 40–80 lines.
+- `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
+  (controller focus *and* text entry / input capture) and will sit at the top of
+  that range, `readability.md` at the bottom.
 - No scripts in v1. A palette extractor ("screenshot in, dominant colours out")
   fits the measurement logic and can be added later, but is scope creep while the
   skills themselves do not exist.
