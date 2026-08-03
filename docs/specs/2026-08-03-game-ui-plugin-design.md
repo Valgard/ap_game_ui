@@ -92,6 +92,26 @@ Both SKILL.md files stay engine-free. Engine specifics go to
 comes from checkable statements; pure principles would restate what the model
 already has, and an engine-bound skill would break the greenfield premise.
 
+**An engine appendix names mechanisms, never values.** The distinction is not
+pedantic — it is the difference between a true statement and a false one. Unity has
+a `spritePixelsToUnits` field on the sprite importer; that 16 is its value in a
+given game is a fact about that game. Unity has `TransparencySortMode` on the
+camera; which mode is set is a fact about that game. Unity offers uGUI/Canvas,
+SpriteRenderer, and hand-rolled retained-mode UI; **which one a game uses is a
+choice the game made**, and it is the first thing to establish.
+
+Two Unity games, measured: Core Keeper 1.2.1.4 draws its UI as SpriteRenderer on a
+GUI layer with its own element base — no Canvas. Cities: Skylines 1 uses
+`ColossalFramework.UI` (`UIComponent`/`UIPanel`/`UIView`, 114 files in the
+decompiled `ColossalManaged`) with **zero** references to `UnityEngine.UI` and
+**zero** to `SpriteRenderer`. Same engine, disjoint architectures, and neither one
+uses the framework Unity ships.
+
+So an appendix says *which mechanisms exist and where to read their values in this
+project*. A value copied from one game into the appendix is the label problem, not
+the measurement problem: correctly measured, then filed under a heading that claims
+a reach it never had.
+
 ### D6 — Repository location
 
 `claude-plugins`, one repo carrying both the
@@ -288,6 +308,7 @@ a *relaxed* rule — for that project it does not exist:
 
 | Rule | Precondition |
 |---|---|
+| **every rule below** | **which UI system the game actually uses** — established first, because it decides what the other rows even mean. Two Unity games measured: one draws UI as SpriteRenderer on a GUI layer, the other via its own `ColossalFramework.UI` with zero `UnityEngine.UI` references. The engine does not tell you; the game does |
 | controller focus traversal, device-specific button prompts | the game accepts a gamepad |
 | text entry vs. gameplay input, on-screen keyboard | the UI takes typed input |
 | safe areas, overscan, cutout | output to a TV, or a device with a cutout |
