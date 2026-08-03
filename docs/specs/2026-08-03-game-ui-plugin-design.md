@@ -118,6 +118,7 @@ claude-plugins/
         ├── readability.md
         ├── raster-and-scaling.md
         ├── localization.md
+        ├── verification-gate.md
         ├── capturing-evidence.md
         └── engines/unity.md
 ```
@@ -303,7 +304,7 @@ fact that most games have one.
 
 Record the outcome as `N/A — <reason>` in the **rule applicability table** — a
 precondition is not a token and does not fit that schema, so it has its own, see
-*Two tables, not one*. The reason `ASSUMED` exists is the reason this does:
+*Two records, not one*. The reason `ASSUMED` exists is the reason this does:
 otherwise "not applicable" and "not checked" are afterwards indistinguishable, and
 a skipped check reads as a passed one.
 
@@ -379,6 +380,12 @@ environment — so the files stay publishable. The examples illustrate the rules
 are not claims about any project the skill is later applied to, and they do not
 exempt that project from establishing its own facts.
 
+**`verification-gate.md`** — the gate's lookup half: the two table schemas with
+worked rows, the five links of the decompilation chain and what each one hides, the
+full axis-to-artifact mapping, the recording sequence template, and the extraction
+cadences. Not the rules themselves — those stay in the skill, see *Verification
+gate*. This file is what one consults with a concrete case in hand.
+
 **`capturing-evidence.md`** — how the evidence is produced, listed per platform,
 because the commands are OS-specific and must not leak into an OS-agnostic skill
 body (the same mistake as an engine term would be): lossless stills, screen
@@ -424,6 +431,14 @@ The gate is mandatory because without it "derive the look from the host" is a
 statement of intent the model can satisfy with plausible-sounding numbers — an
 unmeasured `#1a2a2e` looks exactly like a measured one in the token table.
 
+**What stays in the skill, and what is looked up.** The cut is not detail versus
+rule — it is *does this change behaviour while being read*. The exit criteria change
+what counts as finished, so they are inline. Table schemas, the decompilation chain
+and the extraction cadences are consulted once a case arises, so they live in
+`docs/verification-gate.md`. Outsourcing the exit criteria would repeat D4's
+mistake: a gate binds only if it is read, and a reference is weaker than inline
+text.
+
 ```markdown
 ## Verify every assumption against the running game
 
@@ -449,31 +464,19 @@ Confirm by observation before writing the token table:
       which glyphs the button prompts show per input device
 - [ ] Any decompiled finding traced through the whole chain, not a single link
 
-### Two tables, not one
+### Two records, not one
 
-**Token provenance.** Every value carries how it was obtained, and a `measured` row
-names its artifact, the game version, and any setting that affects the value —
-"measured" on its own is a word, not a provenance:
+Both sit beside the implementation, and both are required:
 
-| token | value | provenance |
-|---|---|---|
-| `panel.bg` | `#1a2a2e` | measured — `evidence/craft-panel.png`, v1.2.1.4 |
-| `border.w` | 2 px | measured — same still, top edge |
-| `font.body` | host default | decompiled — chain traced to renderer, v1.2.1.4 |
-| `corner.r` | 0 | **ASSUMED** — corners never sit against a contrasting background |
+- **Token provenance** — every value with how it was obtained. A `measured` row names
+  its artifact, the game version, and any setting that affects the value; "measured"
+  on its own is a word, not a provenance.
+- **Rule applicability** — a precondition is not a token and does not fit that
+  schema, so it gets its own record. Greenfield keeps this one too: it *decides* its
+  preconditions instead of discovering them, and a decision nobody wrote down cannot
+  be looked up later.
 
-**Rule applicability.** Preconditions are not tokens and do not fit that schema, so
-they get their own table:
-
-| rule | applicable | evidence |
-|---|---|---|
-| controller focus traversal | yes | options screen lists gamepad bindings |
-| UI-scale extremes | **N/A** | no UI scale in the options screen |
-| RTL mirroring | **N/A** | no RTL language shipped |
-
-Both tables sit beside the implementation, and both are required. Greenfield keeps
-the applicability table as well — it *decides* its preconditions instead of
-discovering them, and a decision nobody wrote down cannot be looked up later.
+Schemas and worked examples: `${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`.
 
 ### When the gate is passed, and when it is not
 
@@ -511,69 +514,42 @@ as findings is the failure mode.
 
 ### Decompiled sources, when available
 
-A decompiled build tells you *why* a value is what it is; observation only tells
-you *that* it is. Use both. But a decompiled finding counts only once the whole
-chain has been read — never a single link:
-
-    authored data (whatever the engine serializes it as)
-      → construction / initialization
-      → runtime overrides (theme, settings, UI scale, localization)
-      → renderer / shader / sorting
-      → what actually reaches the screen
-
-Reading one link produces confident wrong answers: a field that is authored but
-dead, a value overwritten a frame later, a sort order the pipeline ignores, a
-font that resolves to a fallback face only at runtime. Each of those looks
-perfectly conclusive in isolation.
+A decompiled build tells you *why* a value is what it is; observation tells you
+*that* it is. Use both — but a decompiled finding counts only once the **whole
+chain**, from authored data to what reaches the screen, has been read. One link
+produces confident wrong answers: a field that is authored but dead, a value
+overwritten a frame later, a sort order the pipeline ignores, a font that resolves to
+a fallback only at runtime. Each looks perfectly conclusive in isolation.
 
 A decompiled source never replaces observation — it explains it. Where the chain
 cannot be followed to the end, the finding is unconfirmed and measurement stands.
+
+The chain's five links and what each one hides:
+`${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`.
 
 When an observation contradicts the table, the observation wins and the table
 changes. Never the other way round.
 
 ### Ship criteria, by evidence type
 
-Two kinds of evidence, and the split is not a matter of convenience: for every axis
-that evidence *can* settle, exactly one of the two settles it. Two axes are settled
-by neither — they are named at the end of this section rather than left implicit.
+For every axis that evidence *can* settle, exactly one artifact settles it — and two
+axes are settled by neither.
 
-**Still capture, lossless.** A/B pair against the host: same scene, same scale; if
-you can tell which one is the mod, it is not done. Also every measurement — palette,
-spacing, border weight — plus one still per shipped language for font fallback, and
-one per aspect ratio and UI-scale extreme.
+- **Lossless still** — the A/B pair against the host (same scene, same scale; if you
+  can tell which is the mod, it is not done) and *every* measurement. **Never sample a
+  colour out of a recording:** video is lossy, so the number it yields looks like a
+  measurement while being a guess with extra steps.
+- **Screen recording** — anything that exists only in time, where a still is not
+  merely weaker but structurally unable to show it: focus traversal, input capture
+  while typing, cancel chains, readability in motion, texel shimmer. Recorded against
+  a **written sequence** — an unscripted clip proves only what it happened to
+  contain, and keystrokes are invisible unless the platform draws them.
+- **Neither** — input latency, and states that were never triggered. Coverage is a
+  property of the sequence, not of the medium.
 
-> **Never measure a colour out of a recording.** Video is lossy: chroma subsampling
-> and compression shift values. A sampled frame yields a number that looks like a
-> measurement and is a guess with extra steps — the exact failure the provenance
-> column exists to catch. Measurements come from a lossless still.
-
-**Screen recording.** Anything that only exists in time, where a still is not
-merely weaker but structurally unable to show it:
-- focus traversal — a sequence, not a state
-- input capture: does the character walk while the player types
-- cancel priority per nesting level, as a chain of states
-- readability in motion, and texel shimmer on a moving sprite
-
-Record against a **written sequence**, so the result is reproducible and its
-coverage is legible: open the panel → traverse every element on each input device
-the game accepts → enter text → cancel out one level at a time. Steps whose
-precondition is absent are dropped from the sequence and recorded as `N/A`, not
-silently omitted. An unscripted clip proves only what it happened to contain, and
-keystrokes are invisible in a recording unless the platform draws them — so the
-written sequence is part of the evidence, not a memory aid.
-
-**Neither artifact settles:** input latency (needs high-frame-rate capture or
-instrumentation) and states that were never triggered — coverage is a property of
-the sequence, not of the medium.
-
-For machine review, a recording is read as extracted frames rather than as a file,
-and **the extraction rate has to match the axis under test**. A coarse rate serves
-sequence and coverage — which control held focus, which panel closed. It is useless
-for shimmer and motion readability: those occur per frame, so sampling four frames
-out of sixty discards precisely the defect the recording was made for. Those axes get
-native frame rate over a short window. Recipes per platform live in
-`docs/capturing-evidence.md`.
+The full axis-to-artifact mapping, the sequence template, and the extraction cadences
+(a coarse rate for sequence, native rate for per-frame faults):
+`${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`.
 
 None of this is blind judgement: it is a review protocol, not a release
 certificate.
@@ -633,13 +609,13 @@ A misrouted prompt is a description defect, not a user error.
 ## Scope
 
 - The two skills are **not** the same size. `game-ui-design` 120–150 lines;
-  `game-ui-modding` 200–240, because the verification gate alone is ~80 lines and
-  is not compressible without dropping the checklist that makes it work. Both stay
-  within the observed house range (93–232), with the modding skill at its top end.
+  `game-ui-modding` 170–200 — the gate's binding half (rule, checklist, exit
+  criteria) is ~60 lines and stays inline; its lookup half moved to
+  `docs/verification-gate.md`. Both sit inside the observed house range (93–232).
 - `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
   (controller focus *and* text entry / input capture) and will sit at the top of
-  that range, `readability.md` at the bottom. `capturing-evidence.md` is the
-  exception at ~40 — it is recipes, not reasoning.
+  that range, `readability.md` at the bottom. Two exceptions, both reference rather
+  than reasoning: `verification-gate.md` at ~50 and `capturing-evidence.md` at ~40.
 - No scripts in v1. A palette extractor ("screenshot in, dominant colours out")
   fits the measurement logic and can be added later, but is scope creep while the
   skills themselves do not exist.
