@@ -248,8 +248,33 @@ templated, name the shape and add it to this list.
 
 ## Shared mechanics layer (`docs/`)
 
-Identical in application scope for both skills; only the diegetic layer differs
-(a choice in greenfield, a given in modding).
+The same files serve both skills; only the diegetic layer differs (a choice in
+greenfield, a given in modding).
+
+### Not every constraint applies to every game
+
+Each rule below carries a precondition. A rule whose precondition is absent is not
+a *relaxed* rule — for that project it does not exist:
+
+| Rule | Precondition |
+|---|---|
+| controller focus traversal, device-specific button prompts | the game accepts a gamepad |
+| text entry vs. gameplay input, on-screen keyboard | the UI takes typed input |
+| safe areas, overscan, cutout | output to a TV, or a device with a cutout |
+| integer scaling, texel snapping, atlas padding | pixel art, or any point-filtered sprite |
+| UI-scale extremes | the game exposes a UI scale — **many do not** |
+| ultrawide and 4:3 | a platform that ships those ratios |
+| RTL mirroring, contextual shaping | an RTL language is shipped |
+| CJK line breaking, IME | a CJK language is shipped |
+
+**Applicability is itself an observation, not an assumption.** "This game has no UI
+scale" is a statement about the game and falls under the same gate as a colour
+value: open the options screen. Do not infer it from the genre, the engine, or the
+fact that most games have one.
+
+Record the outcome as `N/A — <reason>` beside the tokens, for the same reason
+`ASSUMED` exists: otherwise "not applicable" and "not checked" are afterwards
+indistinguishable, and a skipped check reads as a passed one.
 
 **`input-and-focus.md`** — a controller is not a keyboard with different keys:
 explicit focus neighbours (geometric auto-derivation fails on irregular grids);
@@ -283,7 +308,8 @@ reference resolution plus UI scale instead of absolute pixel sizes; atlas paddin
 against bleeding. Reference resolution alone does not prevent clipping or an
 unusable composition, so the layout is checked at the ratios and scales the target
 platform actually ships: ultrawide 21:9 and 4:3 alongside 16:9, dynamic
-resolution, OS display scaling, and both ends of the game's own UI-scale slider.
+resolution, OS display scaling, and — *where the game exposes one at all* — both
+ends of its UI scale.
 
 **`localization.md`** — German runs ~30% longer than English, so fixed boxes
 break there first; **glyph coverage** (an atlas or bitmap font has a fixed
@@ -360,6 +386,9 @@ The check is the running game — not the editor, not the wiki, not memory:
 - A wiki or changelog describes some version, not the installed one.
 
 Confirm by observation before writing the token table:
+- [ ] Preconditions established by looking, not inferred — does the game take a
+      gamepad, does the UI take typed input, is there a UI scale at all? Each one
+      recorded as applicable or `N/A — <reason>`
 - [ ] Palette sampled from a lossless still of the running game, not estimated
 - [ ] Font confirmed available *including the special characters of every shipped
       language* — one missing glyph silently swaps in a fallback face
@@ -443,10 +472,12 @@ merely weaker but structurally unable to show it:
 - readability in motion, and texel shimmer on a moving sprite
 
 Record against a **written sequence**, so the result is reproducible and its
-coverage is legible: open the panel → traverse every element on the pad → enter
-text → cancel out one level at a time. An unscripted clip proves only what it
-happened to contain. Keystrokes are invisible in a recording unless the platform
-draws them, so the sequence is part of the evidence, not a memory aid.
+coverage is legible: open the panel → traverse every element on each input device
+the game accepts → enter text → cancel out one level at a time. Steps whose
+precondition is absent are dropped from the sequence and recorded as `N/A`, not
+silently omitted. An unscripted clip proves only what it happened to contain, and
+keystrokes are invisible in a recording unless the platform draws them — so the
+written sequence is part of the evidence, not a memory aid.
 
 **Neither artifact settles:** input latency (needs high-frame-rate capture or
 instrumentation) and states that were never triggered — coverage is a property of
@@ -465,10 +496,14 @@ difference away as measurement error.
 
 **The reduced variant in `game-ui-design`.** There is no host to measure, so
 provenance does not apply — but every constraint in the mechanics layer still
-needs an in-game check, and those checks are identical: focus traversal on a pad,
-the longest shipped language in the narrowest box, a sprite in motion, both ends of
-the UI-scale slider. Greenfield replaces the question "where did this value come
-from" with "does my own decision survive the constraints".
+needs an in-game check, and those checks are identical — subject to the same
+preconditions: focus traversal on each supported input device, the longest shipped
+language in the narrowest box, a sprite in motion, the UI scale at both ends if
+there is one. Greenfield replaces the question "where did this value come from"
+with "does my own decision survive the constraints", and it decides the
+preconditions rather than discovering them — which is precisely why they must be
+written down: in a new game, whether there is a UI scale or gamepad support is a
+design choice that nobody else can look up later.
 
 ## `game-ui-design`: when the target is an existing game
 
