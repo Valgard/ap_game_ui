@@ -396,12 +396,16 @@ cannot serve both axes: `ffmpeg -i clip.mov -vf fps=4 seq-%03d.png` for sequence
 coverage, and `ffmpeg -i clip.mov -ss <t> -t 1 shimmer-%03d.png` at native rate over
 a one-second window for per-frame faults. Other platforms get their own entry.
 
-**Every `docs/` file ends with a verification line** that names both the check and
-its artifact type: how do you establish that this rule is violated in *this*
-project, and is that a still or a recording? For texel snapping: move a sprite
-slowly across the screen and watch for edge shimmer — a recording, because the
-fault does not exist in any single frame. This is the difference between a skill
-that advises and one that prescribes checks.
+**Each of the four mechanics files and `engines/unity.md` ends with a verification
+line** that names both the check and its artifact type: how do you establish that
+this rule is violated in *this* project, and is that a still or a recording? For
+texel snapping: move a sprite slowly across the screen and watch for edge shimmer —
+a recording, because the fault does not exist in any single frame. This is the
+difference between a skill that advises and one that prescribes checks.
+
+`verification-gate.md` and `capturing-evidence.md` carry no verification line of
+their own. They *are* the verification reference; a check for how to check the
+checking instructions would close a circle rather than open one.
 
 ## Process
 
