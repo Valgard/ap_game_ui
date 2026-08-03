@@ -217,6 +217,17 @@ a vanilla game introduces a new interface of its own. What stays binding is the
 grammar: spacing grid, font, border weight, panel construction, interaction and
 focus conventions, button-prompt style.
 
+**Original assets are not new grammar.** Whether a sprite was drawn for the mod is
+irrelevant. What decides is whether it obeys the host's construction rules —
+measured spacing, pixel grid, outline weight, palette range. A hand-drawn 9-slice
+panel frame that matches the host's inventory margin is motif; the same frame two
+pixels thicker is grammar. **Match the host's style, not its art.**
+
+That distinction matters because construction elements read as grammar at first
+glance: a border, a scrollbar, a row background. They are motif as long as they are
+built to the host's measurements, and a mod that authors every pixel itself can
+still be entirely host-grammar work.
+
 The test is therefore not "is anything new here" but **"would the host's own
 designers have built it this way"**. New motif inside the host's grammar passes.
 New grammar does not.
@@ -614,6 +625,8 @@ Empirical, not by self-assessment: load the plugin in a fresh session via
 | "HUD for a space game" | `game-ui-design` |
 | "Full UI overhaul for an existing RPG, own visual language" | `game-ui-design` |
 | "Match my settings panel to the game's own panels" | `game-ui-modding` |
+| "A window of my own, with my own sprites, that fits into the game's UI" | `game-ui-modding` |
+| "Replace the inventory's layout and look, leave the rest of the game's UI alone" | `game-ui-design` |
 
 A misrouted prompt is a description defect, not a user error.
 
