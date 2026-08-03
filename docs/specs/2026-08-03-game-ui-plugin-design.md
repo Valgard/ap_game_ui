@@ -28,8 +28,9 @@ an MCP editor bridge, not a design skill.
 
 ## Goals
 
-- Serve greenfield game UI (own visual identity) **and** UI for an existing game
-  (indistinguishable from the host).
+- Serve greenfield game UI (its own visual identity) **and** UI for an existing
+  game (indistinguishable *in the host's grammar* — see the grammar-vs-motif rule,
+  which is what "indistinguishable" means throughout this spec).
 - Carry a game-specific constraint layer that is concrete enough to decide
   right from wrong, not a restatement of textbook principles.
 - Stay engine-agnostic in the skills themselves so any new project qualifies.
@@ -64,8 +65,8 @@ together. This is exactly how Superpowers is laid out (`skills/` alongside
 
 A UI **overhaul** mod (pattern: SkyUI) is a mod, but deliberately replaces the
 host's look. Under a "new vs. existing" axis it would route to the modding
-skill, whose success criterion ("a player takes it for vanilla") is the opposite
-of its purpose.
+skill, whose success criterion — that the host's own designers could have built it
+— is the opposite of its purpose.
 
 Therefore both descriptions are written along the *form* axis. The overhaul then
 falls cleanly on the "own form" side and the router hits it directly.
@@ -98,7 +99,7 @@ the single-repo pattern.
 
 Remote: `backup` on a self-hosted Git server. No GitHub
 `origin` for now; whether this becomes a public marketplace is an open question
-(see below). The layout is identical either way, so the later move is
+(see *Open questions*). The layout is identical either way, so the later move is
 `git remote add origin …` plus `/plugin marketplace add` — no restructuring.
 
 ## Layout
@@ -186,7 +187,7 @@ skeleton, restraint and screenshot self-critique, and the UX-writing section.
 |---|---|---|
 | Authority | the game's fiction | the host game |
 | Core operation | invent | **derive** |
-| Success criterion | "unmistakable, could be no other game" | "a player takes it for vanilla" |
+| Success criterion | "unmistakable, could be no other game" | "the host's own designers would have built it this way" (grammar, not motif — see *New content inside the host's grammar*) |
 | Risk | one justifiable risk is required | any risk is a defect |
 | Diegetic layer | a deliberate choice (diegetic / meta / spatial / non-diegetic) | given by the host; recognized and kept |
 | Typography | pairing is designed | the font is a finding, not a choice — read it, don't pick it |
@@ -293,7 +294,7 @@ all invert; Arabic needs contextual shaping, which per-glyph atlas rendering
 breaks; CJK breaks lines per character rather than per word, invalidating
 word-wrap assumptions; and strings of mixed direction need their own test case.
 
-Three of these generalize findings from Core Keeper mod work: sprite distortion
+Three of the rules above generalize findings from Core Keeper mod work: sprite distortion
 at positions exactly `k/16` is an instance of texel snapping; UI dimming at equal
 absolute Z is an instance of sort-by-Z; a font variant without umlauts is an
 instance of glyph coverage. They go in as **generic rules with a concrete
@@ -321,9 +322,12 @@ self-critique, and the full UX-writing section — with one inversion, in that t
 modding skill matches the **host's voice**, not its own. If the game says
 "backpack", it is not "inventory".
 
-## Verification gate (`game-ui-modding`)
+## Verification gate
 
-A mandatory section, because without it "derive the look from the host" is a
+Full form in `game-ui-modding`, quoted below; the reduced variant for
+`game-ui-design` follows after it.
+
+The gate is mandatory because without it "derive the look from the host" is a
 statement of intent the model can satisfy with plausible-sounding numbers — an
 unmeasured `#1a2a2e` looks exactly like a measured one in the token table.
 
@@ -411,8 +415,8 @@ above, in the running game. The judgement is also not blind: it is a review
 heuristic, not a release certificate.
 ```
 
-The point of the last paragraph: the typical failure is not skipping the check,
-but running it, seeing it contradict the assumption, and explaining the
+The point of the "observation wins" rule: the typical failure is not skipping the
+check, but running it, seeing it contradict the assumption, and explaining the
 difference away as measurement error.
 
 **The reduced variant in `game-ui-design`.** There is no host to measure, so
@@ -447,7 +451,10 @@ A misrouted prompt is a description defect, not a user error.
 
 ## Scope
 
-- Each SKILL.md 100–150 lines (house convention is 93–232; `frontend-design` is 56).
+- The two skills are **not** the same size. `game-ui-design` 120–150 lines;
+  `game-ui-modding` 200–240, because the verification gate alone is ~80 lines and
+  is not compressible without dropping the checklist that makes it work. Both stay
+  within the observed house range (93–232), with the modding skill at its top end.
 - `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
   (controller focus *and* text entry / input capture) and will sit at the top of
   that range, `readability.md` at the bottom.
