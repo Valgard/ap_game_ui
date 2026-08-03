@@ -130,6 +130,14 @@ The marketplace is named **`valgard-plugins`**, not `claude-plugins` after the
 repo: marketplace names share one namespace with `claude-plugins-official`, and a
 near-identical name there is a hazard. The plugin inside it is `game-ui`.
 
+**How the skills reach the shared `docs/`.** Both SKILL.md files reference them as
+`${CLAUDE_PLUGIN_ROOT}/docs/<file>.md` — the documented variable for portable paths
+inside a plugin. A relative path would break as soon as the plugin is installed
+somewhere else. Bundled resources are not loaded automatically, so each reference
+also states *when* to read the file ("before writing the token table, read
+`input-and-focus.md`"), not merely that it exists. A file nobody is told to open is
+a file that stays closed.
+
 ## The two descriptions
 
 These are the load-bearing artifacts; the router sees nothing else.
@@ -179,7 +187,7 @@ skeleton, restraint and visual self-critique, and the UX-writing section.
 | Element | `game-ui-design` | `game-ui-modding` |
 |---|---|---|
 | Mode directive (table below) | own form | host form |
-| Verification gate | reduced: no host to measure, but the mechanics layer still needs in-game checks | full: the host is the reference, so measurement is the core operation |
+| Verification gate | reduced *only* where no host exists: invented values need no provenance, host mechanics facts still do | full: the host is the reference, so measurement is the core operation |
 | Host-constraint section | present, for the overhaul case | not needed — the whole skill is about the host |
 | UX-writing voice | its own | the host's |
 
@@ -211,11 +219,21 @@ focus conventions, button-prompt style.
 
 The test is therefore not "is anything new here" but **"would the host's own
 designers have built it this way"**. New motif inside the host's grammar passes.
-New grammar does not. Replacing the grammar wholesale is the overhaul case, and
-that belongs to `game-ui-design`.
+New grammar does not.
+
+**Scope does not change the verdict.** New grammar for *any* subsystem — the
+inventory alone, the map alone — is `game-ui-design` work, not modding at reduced
+size. It is the historically common shape of an overhaul: SkyUI replaced inventory
+and map, not the whole interface. Routing on proportion would put the most demanding
+mods in the skill that forbids what they are for.
+
+What the partial case adds is an obligation the full-replacement case does not have:
+**the seams**. Where the new grammar meets the untouched rest, the transition is the
+quality marker — a panel that is excellent alone and jarring next to its neighbour
+has failed at the only place a player sees both.
 
 This closes the gap the binary would otherwise leave: a mod can be neither
-literally indistinguishable nor a full replacement, and without this rule such
+literally indistinguishable nor a full replacement, and without these rules such
 work would land on a success criterion it cannot satisfy.
 
 ### Anti-default calibration for `game-ui-design`
@@ -272,9 +290,11 @@ scale" is a statement about the game and falls under the same gate as a colour
 value: open the options screen. Do not infer it from the genre, the engine, or the
 fact that most games have one.
 
-Record the outcome as `N/A — <reason>` beside the tokens, for the same reason
-`ASSUMED` exists: otherwise "not applicable" and "not checked" are afterwards
-indistinguishable, and a skipped check reads as a passed one.
+Record the outcome as `N/A — <reason>` in the **rule applicability table** — a
+precondition is not a token and does not fit that schema, so it has its own, see
+*Two tables, not one*. The reason `ASSUMED` exists is the reason this does:
+otherwise "not applicable" and "not checked" are afterwards indistinguishable, and
+a skipped check reads as a passed one.
 
 **`input-and-focus.md`** — a controller is not a keyboard with different keys:
 explicit focus neighbours (geometric auto-derivation fails on irregular grids);
@@ -282,6 +302,15 @@ the initial focus on open is a decision, never "nothing focused"; hover state an
 focus state are two states, not one; selection outside the viewport pulls the
 scroll along, computed pivot-correct; button prompts follow the active device;
 nothing reachable by hover only.
+
+**Focus has a lifecycle, not only a position** — and this spec's own example, a
+filter field above a scrolling list, breaks every one of these: focus returns to its
+origin when a nested panel or modal closes; when the focused row disappears because
+it was filtered out, removed, disabled or reordered, focus moves by a stated rule
+instead of vanishing; disabled and hidden controls are skipped consistently in every
+direction, not only downward; and switching input device mid-focus keeps the
+selection while swapping the prompts. Filtering *is* removing the focused row, so
+this is the main interaction of that example rather than an edge case.
 
 The same file's second half is **text entry and input capture**, because the
 modding description explicitly covers added *fields*: while a field holds focus,
@@ -309,33 +338,45 @@ against bleeding. Reference resolution alone does not prevent clipping or an
 unusable composition, so the layout is checked at the ratios and scales the target
 platform actually ships: ultrawide 21:9 and 4:3 alongside 16:9, dynamic
 resolution, OS display scaling, and — *where the game exposes one at all* — both
-ends of its UI scale.
+ends of its UI scale. Point-filtered art is not the only thing display scaling
+affects: text and vector rasterization at fractional DPI blurs or shifts on its own
+terms, so it is checked separately rather than assumed covered by the pixel rules.
 
-**`localization.md`** — German runs ~30% longer than English, so fixed boxes
-break there first; **glyph coverage** (an atlas or bitmap font has a fixed
+**`localization.md`** — German runs roughly 30% longer than English for short UI
+strings; that is a useful order of magnitude, not a ranking — Finnish and Russian
+regularly run longer, and CJK fails on entirely different grounds. Which language is
+longest is a property of the individual string, which is why the check covers every
+shipped language instead of one presumed worst case. Further: **glyph coverage** (an atlas or bitmap font has a fixed
 character set; one missing glyph silently swaps in a fallback face and breaks the
 look in place); no string concatenation; placeholders must be reorderable; plural
 rules are language-dependent; raw term keys in the UI are a registration fault,
 not a design problem. Beyond Latin scripts: right-to-left languages mirror the
 **layout**, not merely the text — focus order, icon direction and progress fill
-all invert; Arabic needs contextual shaping, which per-glyph atlas rendering
-breaks; CJK breaks lines per character rather than per word, invalidating
-word-wrap assumptions; and strings of mixed direction need their own test case.
+all invert; Arabic needs contextual shaping, and what breaks it is
+character-by-character rendering *without* a shaping step — an atlas is compatible
+as long as it holds the shaped forms and selection happens after shaping; CJK breaks
+lines per character rather than per word, invalidating word-wrap assumptions; and
+strings of mixed direction need their own test case.
 
-Three of the rules above generalize findings from Core Keeper mod work: sprite distortion
-at positions exactly `k/16` is an instance of texel snapping; UI dimming at equal
-absolute Z is an instance of sort-by-Z; a font variant without umlauts is an
-instance of glyph coverage. They go in as **generic rules with a concrete
-example**, naming the game but never the private build environment — so the files
-stay publishable.
+Three of the rules above generalize findings from the author's own Core Keeper mod
+work on game version 1.2.1.4, each established in-game rather than inferred: sprite
+distortion at positions exactly `k/16` is an instance of texel snapping; UI dimming
+at equal absolute Z is an instance of sort-by-Z; a font variant without umlauts is an
+instance of glyph coverage. They go in as **generic rules with a concrete example**,
+naming the game and version so a reader can place them, but never the private build
+environment — so the files stay publishable. The examples illustrate the rules; they
+are not claims about any project the skill is later applied to, and they do not
+exempt that project from establishing its own facts.
 
 **`capturing-evidence.md`** — how the evidence is produced, listed per platform,
 because the commands are OS-specific and must not leak into an OS-agnostic skill
 body (the same mistake as an engine term would be): lossless stills, screen
 recording with a time limit and visible clicks where the platform offers them, and
 frame extraction for machine review. On this machine that is
-`screencapture -v -V<sec> -k` and `ffmpeg -i clip.mov -vf fps=4 frame-%03d.png`;
-other platforms get their own entry.
+`screencapture -v -V<sec> -k`, plus **two** extraction cadences because one rate
+cannot serve both axes: `ffmpeg -i clip.mov -vf fps=4 seq-%03d.png` for sequence and
+coverage, and `ffmpeg -i clip.mov -ss <t> -t 1 shimmer-%03d.png` at native rate over
+a one-second window for per-frame faults. Other platforms get their own entry.
 
 **Every `docs/` file ends with a verification line** that names both the check and
 its artifact type: how do you establish that this rule is violated in *this*
@@ -397,19 +438,50 @@ Confirm by observation before writing the token table:
       which glyphs the button prompts show per input device
 - [ ] Any decompiled finding traced through the whole chain, not a single link
 
-### The token table records provenance
+### Two tables, not one
 
-Every value carries how it was obtained, in the table itself:
+**Token provenance.** Every value carries how it was obtained, and a `measured` row
+names its artifact, the game version, and any setting that affects the value —
+"measured" on its own is a word, not a provenance:
 
 | token | value | provenance |
 |---|---|---|
-| `panel.bg` | `#1a2a2e` | measured — screenshot, crafting panel |
-| `border.w` | 2 px | measured — same panel, top edge |
-| `font.body` | host default | decompiled — chain traced to renderer |
-| `corner.r` | 0 | **ASSUMED** — no sample found |
+| `panel.bg` | `#1a2a2e` | measured — `evidence/craft-panel.png`, v1.2.1.4 |
+| `border.w` | 2 px | measured — same still, top edge |
+| `font.body` | host default | decompiled — chain traced to renderer, v1.2.1.4 |
+| `corner.r` | 0 | **ASSUMED** — corners never sit against a contrasting background |
 
-`ASSUMED` is a legal entry, and the only honest one where verification was not
-possible. What is never legal is an *unmarked* value: a guess formatted like a
+**Rule applicability.** Preconditions are not tokens and do not fit that schema, so
+they get their own table:
+
+| rule | applicable | evidence |
+|---|---|---|
+| controller focus traversal | yes | options screen lists gamepad bindings |
+| UI-scale extremes | **N/A** | no UI scale in the options screen |
+| RTL mirroring | **N/A** | no RTL language shipped |
+
+Both tables sit beside the implementation, and both are required. Greenfield keeps
+the applicability table as well — it *decides* its preconditions instead of
+discovering them, and a decision nobody wrote down cannot be looked up later.
+
+### When the gate is passed, and when it is not
+
+`ASSUMED` and `N/A` are legal entries. What makes them legal is the discipline
+around them:
+
+1. **Completeness** — every token the implementation uses has a row. A value in the
+   code with no row is a defect, not an omission.
+2. **Identifiability** — every `measured` row names artifact, version and the
+   settings that affect it.
+3. **A reason, not a shrug** — `ASSUMED` states why verification was impossible and
+   what would settle it. "Not checked" without a reason is incomplete, not
+   `ASSUMED`.
+4. **Saturation limit** — if the load-bearing tokens (palette, font, spacing) are
+   *all* `ASSUMED`, the gate is **not** passed. The result is a draft and is
+   reported as one. A gate that can be satisfied with nothing measured is
+   decoration.
+
+An unmarked value stays the one thing that is never legal: a guess formatted like a
 measurement is exactly the failure this gate exists to prevent.
 
 ### When verification is not possible
@@ -451,8 +523,9 @@ changes. Never the other way round.
 
 ### Ship criteria, by evidence type
 
-Two kinds of evidence, and the split is not a matter of convenience — each axis
-has exactly one artifact that can settle it.
+Two kinds of evidence, and the split is not a matter of convenience: for every axis
+that evidence *can* settle, exactly one of the two settles it. Two axes are settled
+by neither — they are named at the end of this section rather than left implicit.
 
 **Still capture, lossless.** A/B pair against the host: same scene, same scale; if
 you can tell which one is the mod, it is not done. Also every measurement — palette,
@@ -483,8 +556,13 @@ written sequence is part of the evidence, not a memory aid.
 instrumentation) and states that were never triggered — coverage is a property of
 the sequence, not of the medium.
 
-For machine review, a recording is read as extracted frames rather than as a file.
-Recipes per platform live in `docs/capturing-evidence.md`.
+For machine review, a recording is read as extracted frames rather than as a file,
+and **the extraction rate has to match the axis under test**. A coarse rate serves
+sequence and coverage — which control held focus, which panel closed. It is useless
+for shimmer and motion readability: those occur per frame, so sampling four frames
+out of sixty discards precisely the defect the recording was made for. Those axes get
+native frame rate over a short window. Recipes per platform live in
+`docs/capturing-evidence.md`.
 
 None of this is blind judgement: it is a review protocol, not a release
 certificate.
@@ -494,16 +572,27 @@ The point of the "observation wins" rule: the typical failure is not skipping th
 check, but running it, seeing it contradict the assumption, and explaining the
 difference away as measurement error.
 
-**The reduced variant in `game-ui-design`.** There is no host to measure, so
-provenance does not apply — but every constraint in the mechanics layer still
-needs an in-game check, and those checks are identical — subject to the same
-preconditions: focus traversal on each supported input device, the longest shipped
-language in the narrowest box, a sprite in motion, the UI scale at both ends if
-there is one. Greenfield replaces the question "where did this value come from"
-with "does my own decision survive the constraints", and it decides the
-preconditions rather than discovering them — which is precisely why they must be
-written down: in a new game, whether there is a UI scale or gamepad support is a
-design choice that nobody else can look up later.
+**The reduced variant in `game-ui-design`.** Provenance attaches to where a value
+came from, not to which skill is running:
+
+- **Invented values** — palette, type, layout, signature — carry no provenance. They
+  are decisions, and a decision has no source to cite.
+- **Host mechanics facts** carry full provenance whenever a host exists at all, and
+  it does in the overhaul case that D3 routes here. Font availability, input system,
+  resolution model and the fiction's frame are statements about someone else's game;
+  the gate treats them exactly as the modding skill would.
+
+Greenfield with no host has only the first kind — which is why the gate is *reduced*
+there, not *absent*.
+
+Either way the mechanics layer needs its in-game checks, subject to the same
+preconditions: focus traversal on each supported input device, one still per shipped
+language (the longest string is an *additional* wrap test, never a substitute for
+coverage), a sprite in motion at native frame rate, the UI scale at both ends where
+there is one. Greenfield replaces "where did this value come from" with "does my own
+decision survive the constraints" — and it decides its preconditions instead of
+discovering them, which is exactly why the applicability table is not optional there:
+nobody can look up later whether the game was meant to support a gamepad.
 
 ## `game-ui-design`: when the target is an existing game
 
