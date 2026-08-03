@@ -1,0 +1,16 @@
+{
+  "name": "game-ui",
+  "description": "Game UI/UX design skills — own visual identity, or indistinguishable from an existing host game",
+  "version": "1.0.0",
+  "author": {
+    "name": "Valgard Trontheim"
+  },
+  "keywords": [
+    "game-ui",
+    "ux",
+    "modding",
+    "hud",
+    "controller",
+    "pixel-art"
+  ]
+}
