@@ -38,7 +38,8 @@ an MCP editor bridge, not a design skill.
 ## Non-goals
 
 - No engine-specific skill body. Engine specifics live in appendices.
-- No scripts or tooling in v1. This is a knowledge skill.
+- No scripts or tooling in v1. This is a knowledge skill; documented one-liners for
+  capture and frame extraction are not tooling.
 - No replacement for `frontend-design` on web work.
 
 ## Decisions
@@ -117,6 +118,7 @@ claude-plugins/
         ├── readability.md
         ├── raster-and-scaling.md
         ├── localization.md
+        ├── capturing-evidence.md
         └── engines/unity.md
 ```
 
@@ -170,7 +172,7 @@ Two properties are intentional:
 ## What is shared and what is mode-specific
 
 **Shared verbatim by both skills:** the mechanics layer (`docs/`), the process
-skeleton, restraint and screenshot self-critique, and the UX-writing section.
+skeleton, restraint and visual self-critique, and the UX-writing section.
 
 **Mode-specific:**
 
@@ -301,10 +303,20 @@ instance of glyph coverage. They go in as **generic rules with a concrete
 example**, naming the game but never the private build environment — so the files
 stay publishable.
 
-**Every `docs/` file ends with a verification line:** how do you establish that
-this rule is violated in *this* project? For texel snapping: move a sprite slowly
-across the screen and watch for edge shimmer. This is the difference between a
-skill that advises and one that prescribes checks.
+**`capturing-evidence.md`** — how the evidence is produced, listed per platform,
+because the commands are OS-specific and must not leak into an OS-agnostic skill
+body (the same mistake as an engine term would be): lossless stills, screen
+recording with a time limit and visible clicks where the platform offers them, and
+frame extraction for machine review. On this machine that is
+`screencapture -v -V<sec> -k` and `ffmpeg -i clip.mov -vf fps=4 frame-%03d.png`;
+other platforms get their own entry.
+
+**Every `docs/` file ends with a verification line** that names both the check and
+its artifact type: how do you establish that this rule is violated in *this*
+project, and is that a still or a recording? For texel snapping: move a sprite
+slowly across the screen and watch for edge shimmer — a recording, because the
+fault does not exist in any single frame. This is the difference between a skill
+that advises and one that prescribes checks.
 
 ## Process
 
@@ -315,9 +327,12 @@ The `frontend-design` sequence is kept; the first phase inverts.
 | 1 | **Invent**: palette, type, layout, signature — plus diegetic layer and input model | **Measure**: palette by pixel sample, spacing grid from existing panels, font as a finding, border weight, recognize the diegetic layer |
 | 2 | Self-review against the default clusters | Fix the findings as a token table, each value tagged with its provenance |
 | 3 | Build to the plan | Build **against the table** |
-| 4 | Screenshot critique: "is it unmistakable?" | Side by side with a vanilla screenshot: "does it stand out?" |
+| 4 | Visual critique: "is it unmistakable?" | A/B against vanilla: "does it stand out?" |
 
-Carried over unchanged into both: restraint ("remove one accessory"), screenshot
+Phase 4 is not one artifact in either mode: the still settles the visual axis, and
+the time-based axes need a recording. See *Ship criteria, by evidence type*.
+
+Carried over unchanged into both: restraint ("remove one accessory"), visual
 self-critique, and the full UX-writing section — with one inversion, in that the
 modding skill matches the **host's voice**, not its own. If the game says
 "backpack", it is not "inventory".
@@ -345,7 +360,7 @@ The check is the running game — not the editor, not the wiki, not memory:
 - A wiki or changelog describes some version, not the installed one.
 
 Confirm by observation before writing the token table:
-- [ ] Palette sampled from a screenshot of the running game, not estimated
+- [ ] Palette sampled from a lossless still of the running game, not estimated
 - [ ] Font confirmed available *including the special characters of every shipped
       language* — one missing glyph silently swaps in a fallback face
 - [ ] Spacing and border weight measured on an existing host panel
@@ -405,14 +420,43 @@ cannot be followed to the end, the finding is unconfirmed and measurement stands
 When an observation contradicts the table, the observation wins and the table
 changes. Never the other way round.
 
-**Visual** ship criterion: an A/B screenshot pair — host UI and yours, same scene,
-same scale. If you can tell which one is the mod, it is not done.
+### Ship criteria, by evidence type
 
-This settles the visual axis and nothing else. A screenshot cannot show focus
-traversal, input capture, a fallback font under a different language, or
-readability in motion — each of those is settled by its own item in the checklist
-above, in the running game. The judgement is also not blind: it is a review
-heuristic, not a release certificate.
+Two kinds of evidence, and the split is not a matter of convenience — each axis
+has exactly one artifact that can settle it.
+
+**Still capture, lossless.** A/B pair against the host: same scene, same scale; if
+you can tell which one is the mod, it is not done. Also every measurement — palette,
+spacing, border weight — plus one still per shipped language for font fallback, and
+one per aspect ratio and UI-scale extreme.
+
+> **Never measure a colour out of a recording.** Video is lossy: chroma subsampling
+> and compression shift values. A sampled frame yields a number that looks like a
+> measurement and is a guess with extra steps — the exact failure the provenance
+> column exists to catch. Measurements come from a lossless still.
+
+**Screen recording.** Anything that only exists in time, where a still is not
+merely weaker but structurally unable to show it:
+- focus traversal — a sequence, not a state
+- input capture: does the character walk while the player types
+- cancel priority per nesting level, as a chain of states
+- readability in motion, and texel shimmer on a moving sprite
+
+Record against a **written sequence**, so the result is reproducible and its
+coverage is legible: open the panel → traverse every element on the pad → enter
+text → cancel out one level at a time. An unscripted clip proves only what it
+happened to contain. Keystrokes are invisible in a recording unless the platform
+draws them, so the sequence is part of the evidence, not a memory aid.
+
+**Neither artifact settles:** input latency (needs high-frame-rate capture or
+instrumentation) and states that were never triggered — coverage is a property of
+the sequence, not of the medium.
+
+For machine review, a recording is read as extracted frames rather than as a file.
+Recipes per platform live in `docs/capturing-evidence.md`.
+
+None of this is blind judgement: it is a review protocol, not a release
+certificate.
 ```
 
 The point of the "observation wins" rule: the typical failure is not skipping the
@@ -457,7 +501,8 @@ A misrouted prompt is a description defect, not a user error.
   within the observed house range (93–232), with the modding skill at its top end.
 - `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
   (controller focus *and* text entry / input capture) and will sit at the top of
-  that range, `readability.md` at the bottom.
+  that range, `readability.md` at the bottom. `capturing-evidence.md` is the
+  exception at ~40 — it is recipes, not reasoning.
 - No scripts in v1. A palette extractor ("screenshot in, dominant colours out")
   fits the measurement logic and can be added later, but is scope creep while the
   skills themselves do not exist.
