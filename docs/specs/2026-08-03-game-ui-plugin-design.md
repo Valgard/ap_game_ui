@@ -678,3 +678,11 @@ A misrouted prompt is a description defect, not a user error.
 - **ADR.** The routing decisions (D1, D3, D4) are the kind that are not
   reconstructible later and easy to undo by accident. Candidates for an ADR
   distilled from this spec once the plugin is implemented.
+- **Own game, host grammar.** `game-ui-design`'s description now says "not for UI that
+  must blend into *someone else's* game", but `game-ui-modding` still says "an existing
+  game's own interface" without excluding your own. So "add a panel to our own game,
+  matching our own existing look" is ambiguous: the form is yours to set (design) yet
+  the brief asks for grammar conformance (modding). The honest answer is that modding's
+  *method* — measure the existing grammar rather than invent one — is what that brief
+  wants, whoever owns the game. Left open rather than patched blind: it wants a routing
+  test, not a guess, and the eight-prompt list would need a ninth case for it.
