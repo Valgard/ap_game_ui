@@ -19,6 +19,7 @@ A measured row names the artifact, the game version, and any setting that affect
 
 | rule | applicable | evidence |
 |---|---|---|
+| which UI system the game uses | always — it decides what the rows below mean | code or scene inspection: sprite tree with no `Canvas`, and zero references to the engine's own UI namespace in the build |
 | controller focus traversal | yes | options screen lists gamepad bindings |
 | UI-scale extremes | N/A | no UI scale in the options screen |
 | RTL mirroring | N/A | no RTL language shipped |
@@ -37,6 +38,7 @@ Each link hides its own failure: a field authored but dead by construction, a va
 
 | axis | artifact |
 |---|---|
+| which UI system the game uses | neither a still nor a recording — a code or scene inspection, and it comes first: it decides which rows below apply at all |
 | palette, spacing, border weight | lossless still |
 | font fallback | one still per shipped language |
 | aspect ratios, UI-scale extremes | one still per configuration |
