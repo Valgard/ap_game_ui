@@ -72,6 +72,17 @@ skill, whose success criterion — that the host's own designers could have buil
 Therefore both descriptions are written along the *form* axis. The overhaul then
 falls cleanly on the "own form" side and the router hits it directly.
 
+**A third case the axis catches and an earlier draft's descriptions did not.** A
+studio maintaining the UI of its *own* shipped game — a HUD clipping on ultrawide,
+broken gamepad focus in the options menu, a language being added — is own-form work:
+the grammar is theirs to change if they choose to. It is not a new game, not a mod,
+and not "blending into an existing game" because it *is* that game. The first
+descriptions enumerated project types (new game / mod) and so covered none of it,
+leaving the whole mechanics layer unreachable for maintenance and platform-porting
+work. Fixed by naming the axis in the description — "the UI's form is yours to set" —
+with the project types as examples rather than as the definition. The distinguishing
+question is not how old the game is but **who may change the grammar**.
+
 ### D4 — No skill-to-skill handoff as the primary mechanism
 
 There is no dependency or successor field in skill frontmatter; Anthropic's
@@ -166,13 +177,14 @@ These are the load-bearing artifacts; the router sees nothing else.
 ```yaml
 # skills/game-ui-design/SKILL.md
 name: game-ui-design
-description: Use when the UI should carry its OWN visual identity — a new game, or
-  a mod/overhaul that deliberately replaces the host game's interface with a visual
-  language of its own. Covers aesthetic direction, typography and layout for HUD,
-  menus, inventory, dialogue and onboarding, plus the game-specific constraint
-  layer (controller focus traversal, diegetic layering, readability under motion,
-  safe areas, pixel raster, localization in fixed boxes). NOT for UI that must
-  blend into an existing game's look — use game-ui-modding instead.
+description: Use when the UI's form is yours to set — a new game, your own shipped
+  game's interface (maintenance, a platform port, a new language), or a mod/overhaul
+  that deliberately replaces a host game's interface with a visual language of its
+  own. Covers aesthetic direction, typography and layout for HUD, menus, inventory,
+  dialogue and onboarding, plus the game-specific constraint layer (controller focus
+  traversal, diegetic layering, readability under motion, safe areas, pixel raster,
+  localization in fixed boxes). NOT for UI that must blend into someone else's game
+  — use game-ui-modding instead.
 ```
 
 ```yaml
@@ -631,15 +643,23 @@ Empirical, not by self-assessment: load the plugin in a fresh session via
 | "Match my settings panel to the game's own panels" | `game-ui-modding` |
 | "A window of my own, with my own sprites, that fits into the game's UI" | `game-ui-modding` |
 | "Replace the inventory's layout and look, leave the rest of the game's UI alone" | `game-ui-design` |
+| "Our own shipped game's HUD clips on ultrawide — fix it" | `game-ui-design` |
 
 A misrouted prompt is a description defect, not a user error.
 
 ## Scope
 
-- The two skills are **not** the same size. `game-ui-design` 120–150 lines;
+- The two skills are **not** the same size. `game-ui-design` 120–**165** lines;
   `game-ui-modding` 170–200 — the gate's binding half (rule, checklist, exit
   criteria) is ~60 lines and stays inline; its lookup half moved to
   `docs/verification-gate.md`. Both sit inside the observed house range (93–232).
+- **Line counts measure wrapping, not content, and are a weak budget.** Normalised to
+  the 76-column wrap the mechanics files use, `verification-gate.md` is ~73 lines
+  against its "~50" target while two files reported as *at* their ceiling merely wrap
+  tightest. Treat the numbers as a guard against sprawl, not as a measurement: a
+  needed rule is never cut to defend one. The design ceiling was raised from 150 to
+  165 for exactly that reason — the four exit criteria had to go inline and the old
+  number was the only obstacle.
 - `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
   (controller focus *and* text entry / input capture) and will sit at the top of
   that range, `readability.md` at the bottom. Two exceptions, both reference rather
