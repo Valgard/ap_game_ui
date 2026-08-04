@@ -23,10 +23,11 @@ draws its entire UI as `SpriteRenderer` objects on a dedicated GUI layer,
 with a mod-side element base class standing in for `Canvas` — a survey of
 ten UI mods for that game found `SpriteRenderer` plus a custom element base
 in all ten, and zero use of `UnityEngine.UI`. Cities: Skylines 1 answers the
-opposite way: its managed assembly carries 121 files under the
-`ColossalFramework.UI` namespace (`UIComponent`, `UIPanel`, `UIView`) and
-zero references to `UnityEngine.UI` or `SpriteRenderer`. Neither game uses
-the framework Unity itself ships. Record the answer in the
+opposite way: 114 files in its managed assembly declare themselves inside
+the `ColossalFramework.UI` namespace (`UIComponent`, `UIPanel`, `UIView`),
+and zero files anywhere in that assembly reference `UnityEngine.UI` or
+`SpriteRenderer`. Neither game uses the framework Unity itself ships.
+Record the answer in the
 rule-applicability table the sibling docs ask for — most rows in this file,
 and in them, apply only once that answer is known.
 
