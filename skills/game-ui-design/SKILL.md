@@ -1,0 +1,150 @@
+---
+name: game-ui-design
+description: Use when the UI should carry its OWN visual identity — a new game, or
+  a mod/overhaul that deliberately replaces the host game's interface with a visual
+  language of its own. Covers aesthetic direction, typography and layout for HUD,
+  menus, inventory, dialogue and onboarding, plus the game-specific constraint
+  layer (controller focus traversal, diegetic layering, readability under motion,
+  safe areas, pixel raster, localization in fixed boxes). NOT for UI that must
+  blend into an existing game's look — use game-ui-modding instead.
+---
+
+# Game UI design
+
+Approach this as the design lead of a small studio, hired for a point of
+view: the client wants an interface that could belong to no other game.
+New title or mod-overhaul, the goal is the same — an identity of its own,
+not a competent default.
+
+## If the brief is a mod
+
+If the UI must instead blend into an existing game's own look — read as
+something the host's own team could have shipped — this is the wrong
+skill; use `game-ui-modding` instead. An overhaul that replaces the host's
+look with one of its own stays here; see *When the target is an existing
+game* below for what still binds.
+
+## Ground it in the game's fiction
+
+Before any palette or layout decision, name the game's world: its
+materials, its instruments, its vernacular. A blacksmithing sim's crafting
+menu and a starship's maintenance terminal differ because the fiction
+supplies different objects, not by taste. This is stronger leverage than
+on the web: a game's fiction licenses treatments a marketing site has no
+premise for — a burnt parchment edge, a telemetry-noisy status readout.
+Build every token from the subject in hand, not from "UI in general".
+
+## Pick the diegetic layer deliberately
+
+Decide, and state, which layer the interface lives in: **diegetic**
+(inside the fiction, a character could see it — a wrist terminal); **meta**
+(styled by the fiction but not physically present — a blood-spatter damage
+vignette); **spatial** (in the 3D world but outside the fiction — a
+floating waypoint marker); or **non-diegetic** (the traditional HUD
+overlay). Modding inherits this choice from the host; here it is made
+once, up front, governing every later call about what the interface shows.
+
+## Not these five looks
+
+Five recurring shapes to recognize — the game-UI counterpart of the web's
+own AI-generated defaults:
+
+1. **Sci-fi HUD** — semi-transparent dark panel, cyan glow outline, thin
+   technical all-caps sans, corner brackets as decoration.
+2. **Fantasy parchment** — beige texture, serif display, gold ornament
+   frame, wax-seal buttons.
+3. **Mobile flat** — white icons on 60% black, thick rounded buttons,
+   saturated green/red for yes/no, everything centered.
+4. **Indie retro pixel** — midnight-blue panel, 1px white outline, 8×8
+   bitmap font, hearts as a health meter.
+5. **Muted dark minimal** — desaturated dark cards, hairline dividers,
+   restrained neutral sans, sparse monoline icons, thin progress bars.
+
+This is an open list, not a taxonomy, and **no frequency claim is made**:
+there is no corpus behind it, only shapes to recognize. What marks a look
+as a default rather than a choice is that nothing in it points at this
+subject — the same treatment would serve a farming sim and a survival
+horror game equally well. Cluster 5 deserves the most suspicion: restraint
+reads as deliberation, so it is the one most likely to survive a
+self-review the other four would fail. When a design passes self-review
+and still feels templated, name the shape and add it here.
+
+## Process
+
+1. **Invent** a token system: palette as 4–6 named hex values, 2+ type
+   roles, a layout concept, a signature element — plus the diegetic layer
+   and the input model (which devices, and what focus looks like on each).
+2. **Self-review** the plan against the five clusters above; anything that
+   would serve a different subject equally well gets revised, with what
+   changed and why written down.
+3. **Build** to the revised plan, deriving every colour and type decision
+   from the token table rather than improvising later.
+4. **Critique**: does it read as unmistakable — could this interface
+   belong to any other game?
+
+## Constraints that are not yours to choose
+
+The mechanics layer below is not a style question and is shared with
+`game-ui-modding`; it decides right from wrong the same way in both
+skills. Read each file for the reason given, before the work it governs:
+
+- Before designing focus order, button prompts or any text-entry field,
+  read `${CLAUDE_PLUGIN_ROOT}/docs/input-and-focus.md`.
+- Before sizing HUD text or placing anything near a screen edge or corner,
+  read `${CLAUDE_PLUGIN_ROOT}/docs/readability.md`.
+- If any art is pixel-based or point-filtered, read
+  `${CLAUDE_PLUGIN_ROOT}/docs/raster-and-scaling.md` before finalizing
+  sprite positions, scale or layer order.
+- Before locking a box size, a font, or any string shipping in more than
+  one language, read `${CLAUDE_PLUGIN_ROOT}/docs/localization.md`.
+- Consult `${CLAUDE_PLUGIN_ROOT}/docs/engines/unity.md` when the target
+  runs on Unity, to establish which UI system the project actually uses
+  before any of the above is applied to it.
+- Read `${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md` before writing
+  the token table — it holds the provenance and applicability schemas.
+  The capture commands are one hop further, inside `capturing-evidence.md`,
+  reached from that file once its cadence rule has been read; nothing here
+  points at it directly.
+
+Preconditions — gamepad support, typed input, a UI scale — are established
+by looking, same as any value, except greenfield decides them rather than
+discovering them. Before implementation starts, record each decision in
+the applicability table at
+`${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`: an unwritten decision
+cannot be checked against later.
+
+## When the target is an existing game
+
+An overhaul still answers to the host on non-aesthetic facts: font
+availability, the input system, the resolution model, and the fiction's
+existing frame. Provenance attaches to where a value came from, not to
+which skill produced it — invented values (palette, type, layout,
+signature) carry none, they are decisions with no source to cite. Host
+mechanics facts carry full provenance whenever a host exists at all, and
+one does here: each is measured and recorded exactly as `game-ui-modding`
+would, never assumed just because this skill is about the new look.
+
+New grammar for a single subsystem — the inventory alone, the map alone —
+belongs here regardless of scope; it is never modding at reduced size.
+What the partial case adds is the seam: where new grammar meets the
+untouched rest is the quality marker, the one place a player sees both.
+
+## Restraint and self-critique
+
+Spend the boldness in one place. Once the signature element is set,
+everything around it stays quiet — cut any decoration not doing work for
+this brief. Chanel's rule applies here too: before shipping, look again
+and remove one accessory. Build to a quality floor without announcing it:
+every input device covered, colour never the sole carrier of information,
+motion that respects a reduced-motion setting where offered.
+
+## Writing
+
+Write in the interface's own voice, not a narrator's. Name controls by
+what the player does with them, not the system underneath — a player
+manages a crew, not an `NPCManager`. Default to active voice: a button
+says what happens when pressed, and the result keeps that word — "Craft"
+produces a log line reading "Crafted," never "Item created." An error
+states what happened and how to fix it, without apologizing. An empty
+inventory or an unexplored map is an invitation to act, not a blank state
+to tolerate.
