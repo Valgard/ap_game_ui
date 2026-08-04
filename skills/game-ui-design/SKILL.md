@@ -1,28 +1,30 @@
 ---
 name: game-ui-design
-description: Use when the UI should carry its OWN visual identity — a new game, or
-  a mod/overhaul that deliberately replaces the host game's interface with a visual
-  language of its own. Covers aesthetic direction, typography and layout for HUD,
-  menus, inventory, dialogue and onboarding, plus the game-specific constraint
-  layer (controller focus traversal, diegetic layering, readability under motion,
-  safe areas, pixel raster, localization in fixed boxes). NOT for UI that must
-  blend into an existing game's look — use game-ui-modding instead.
+description: Use when the UI's form is yours to set — a new game, your own shipped
+  game's interface (maintenance, a platform port, a new language), or a mod/overhaul
+  that deliberately replaces a host game's interface with a visual language of its
+  own. Covers aesthetic direction, typography and layout for HUD, menus, inventory,
+  dialogue and onboarding, plus the game-specific constraint layer (controller focus
+  traversal, diegetic layering, readability under motion, safe areas, pixel raster,
+  localization in fixed boxes). NOT for UI that must blend into someone else's game
+  — use game-ui-modding instead.
 ---
 
 # Game UI design
 
 Approach this as the design lead of a small studio, hired for a point of
 view: the client wants an interface that could belong to no other game.
-New title or mod-overhaul, the goal is the same — an identity of its own,
-not a competent default.
+New title, your own shipped game's next revision, or a mod-overhaul — the
+goal is the same: an identity of its own, not a competent default.
 
-## If the brief is a mod
+## If the brief is a mod that must blend in
 
-If the UI must instead blend into an existing game's own look — read as
-something the host's own team could have shipped — this is the wrong
-skill; use `game-ui-modding` instead. An overhaul that replaces the host's
-look with one of its own stays here; see *When the target is an existing
-game* below for what still binds.
+If the UI must instead blend into someone else's game — read as something
+that game's own team could have shipped — this is the wrong skill; use
+`game-ui-modding` instead. Everything whose form is yours stays here: a new
+game, your own shipped game's interface, and an overhaul that replaces a
+host's look with one of its own — see *When the target is an existing game*
+below for what still binds in the latter two.
 
 ## Ground it in the game's fiction
 
@@ -115,14 +117,18 @@ cannot be checked against later.
 
 ## When the target is an existing game
 
-An overhaul still answers to the host on non-aesthetic facts: font
-availability, the input system, the resolution model, and the fiction's
-existing frame. Provenance attaches to where a value came from, not to
-which skill produced it — invented values (palette, type, layout,
-signature) carry none, they are decisions with no source to cite. Host
-mechanics facts carry full provenance whenever a host exists at all, and
-one does here: each is measured and recorded exactly as `game-ui-modding`
-would, never assumed just because this skill is about the new look.
+The existing game is either someone else's, in the overhaul case, or your
+own already shipped — a HUD clipping on ultrawide, gamepad focus broken in
+the options menu, a language being added. Either way the aesthetics stay
+free and the existing build's mechanics stay binding: font availability,
+the input system, the resolution model, and the fiction's existing frame.
+
+Provenance attaches to where a value came from, not to which skill produced
+it — invented values (palette, type, layout, signature) carry none, they
+are decisions with no source to cite. Host mechanics facts carry full
+provenance whenever a host exists at all, and one does here: each is
+measured and recorded exactly as `game-ui-modding` would, never assumed
+just because this skill is about the new look.
 
 New grammar for a single subsystem — the inventory alone, the map alone —
 belongs here regardless of scope; it is never modding at reduced size.
