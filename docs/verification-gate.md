@@ -4,11 +4,13 @@ The rules live in the skill. This file is the lookup half: schemas, the chain, t
 
 ## Token provenance — schema
 
+The rows below are an illustration of **form** — the shape a provenance entry takes. They are not measurements anyone took: `<Game> <version>` and every path are placeholders, and nothing here is a finding about a real game. Copy the shape, never the values.
+
 | token | value | provenance |
 |---|---|---|
-| `panel.bg` | `#1a2a2e` | measured — `evidence/craft-panel.png`, Core Keeper 1.2.1.4 |
-| `border.w` | 2 px | measured — same still, top edge |
-| `font.body` | host default | decompiled — chain traced to renderer, Core Keeper 1.2.1.4 |
+| `panel.bg` | `#RRGGBB` read off the still | measured — `evidence/<panel>.png`, `<Game> <version>` |
+| `border.w` | `<n>` px | measured — same still, top edge |
+| `font.body` | host default | decompiled — chain traced to renderer, `<Game> <version>` |
 | `corner.r` | 0 | ASSUMED — corners never sit against a contrasting background |
 
 A measured row names the artifact, the game version, and any setting that affects the value; a bare "measured" is a word, not a provenance.
