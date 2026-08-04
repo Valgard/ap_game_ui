@@ -22,9 +22,8 @@ goal is the same: an identity of its own, not a competent default.
 If the UI must instead blend into someone else's game — read as something
 that game's own team could have shipped — this is the wrong skill; use
 `game-ui-modding` instead. Everything whose form is yours stays here: a new
-game, your own shipped game's interface, and an overhaul that replaces a
-host's look with one of its own — see *When the target is an existing game*
-below for what still binds in the latter two.
+game, your own shipped game's interface, an overhaul replacing a host's look
+with one of its own — see *When the target is an existing game* below.
 
 ## Ground it in the game's fiction
 
@@ -102,18 +101,16 @@ skills. Read each file for the reason given, before the work it governs:
 - Consult `${CLAUDE_PLUGIN_ROOT}/docs/engines/unity.md` when the target
   runs on Unity, to establish which UI system the project actually uses
   before any of the above is applied to it.
-- Read `${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md` before writing
-  the token table — it holds the provenance and applicability schemas.
-  The capture commands are one hop further, inside `capturing-evidence.md`,
-  reached from that file once its cadence rule has been read; nothing here
-  points at it directly.
+- Read `${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md` before writing the
+  token table — it holds the provenance and applicability schemas, and the
+  capture commands one hop further in `capturing-evidence.md`, reached from
+  there once its cadence rule has been read; never pointed at directly here.
 
-Preconditions — gamepad support, typed input, a UI scale — are established
-by looking, same as any value, except greenfield decides them rather than
-discovering them. Before implementation starts, record each decision in
-the applicability table at
-`${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`: an unwritten decision
-cannot be checked against later.
+Preconditions — gamepad support, typed input, a UI scale — are established by
+looking, same as any value, except greenfield decides them rather than
+discovering them. Before implementation starts, record each decision in the
+applicability table at `${CLAUDE_PLUGIN_ROOT}/docs/verification-gate.md`: an
+unwritten decision cannot be checked against later.
 
 ## When the target is an existing game
 
@@ -124,11 +121,22 @@ free and the existing build's mechanics stay binding: font availability,
 the input system, the resolution model, and the fiction's existing frame.
 
 Provenance attaches to where a value came from, not to which skill produced
-it — invented values (palette, type, layout, signature) carry none, they
-are decisions with no source to cite. Host mechanics facts carry full
-provenance whenever a host exists at all, and one does here: each is
-measured and recorded exactly as `game-ui-modding` would, never assumed
-just because this skill is about the new look.
+it: invented values (palette, type, layout, signature) carry none, being
+decisions with no source to cite, while a mechanics fact about a build that
+already exists is a finding and carries full provenance. Four criteria decide
+when that record is finished:
+
+1. **Completeness** — every such fact the implementation relies on has a
+   row; a value in the code with no row is a defect, not an omission.
+2. **Identifiability** — the row names artifact, game version and the
+   settings that affect the value, and the artifact exists where it says.
+3. **A reason, not a shrug** — `ASSUMED` states why verification was
+   impossible and what would settle it, in the answer and not only in the
+   table. "Not checked" without a reason is incomplete, not `ASSUMED`.
+4. **Saturation limit** — if the load-bearing facts are *all* `ASSUMED` the
+   gate is **not passed**: the result is a draft and is reported as one. An
+   unmarked value is never legal at all — a guess formatted like a
+   measurement is the failure the gate exists to prevent.
 
 New grammar for a single subsystem — the inventory alone, the map alone —
 belongs here regardless of scope; it is never modding at reduced size.
