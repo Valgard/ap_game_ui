@@ -95,7 +95,9 @@ prevent. What makes `ASSUMED` and `N/A` legal is the discipline around them:
 1. **Completeness** — every token the implementation uses has a row. A value
    in the code with no row is a defect, not an omission.
 2. **Identifiability** — every `measured` row names artifact, version and the
-   settings that affect it.
+   settings that affect it, *and* the named artifact exists at the named path,
+   produced by the capture commands `capturing-evidence.md` documents. A path
+   nothing was ever saved to makes the row a guess wearing a citation.
 3. **A reason, not a shrug** — `ASSUMED` states why verification was
    impossible and what would settle it. "Not checked" without a reason is
    incomplete, not `ASSUMED`.
