@@ -81,7 +81,7 @@ focused row — the normal path through this section, not an edge case.
   reads raw key state instead of asking whether a text field owns input.
 - **Cancel priority is defined per nesting level.** A rename field inside an
   inventory panel needs a stated answer for what one Escape press does first —
-  clear the field, close the field, or close the panel — instead of the
+  clear the field, close the panel, or open the pause menu — instead of the
   outermost handler winning by accident and discarding a half-typed value.
 - **IME and composition must work.** A field that fires an input event per
   raw keystroke instead of waiting for IME composition to commit never
