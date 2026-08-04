@@ -12,8 +12,7 @@ Establish which UI system the game actually uses before checking any rule
 below — it is the first precondition and it governs every other row in this
 file: a game whose UI draws no sprites at all, only vector shapes or a
 DOM-like retained-mode tree, has none of the pixel-raster rows to satisfy.
-This is read off the running game, not inferred from the engine or the
-genre.
+This is read off the running game, not inferred from engine or genre.
 
 Three further preconditions gate specific sections below:
 
@@ -64,8 +63,9 @@ surfaces as a colour or brightness fault rather than an ordering one —
 which is why it gets misfiled as a shader problem. Concrete instance, Core
 Keeper 1.2.1.4: a background element at the same absolute Z as the sprite
 in front of it dims that sprite towards grey, with no change to either
-sprite's actual colour data. The fix is an explicit sort key, not a colour
-investigation.
+sprite's colour data, and raising the front sprite's sorting order does
+not lift it out — there, order decides mask clipping and Z decides depth,
+so the fix is a distinct Z. Which key breaks the tie is a per-game fact.
 
 ## Reference resolution and UI scale
 

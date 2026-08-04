@@ -26,10 +26,9 @@ in all ten, and zero use of `UnityEngine.UI`. Cities: Skylines 1 answers the
 opposite way: 114 files in its managed assembly declare themselves inside
 the `ColossalFramework.UI` namespace (`UIComponent`, `UIPanel`, `UIView`),
 and zero files anywhere in that assembly reference `UnityEngine.UI` or
-`SpriteRenderer`. Neither game uses the framework Unity itself ships.
-Record the answer in the
-rule-applicability table the sibling docs ask for — most rows in this file,
-and in them, apply only once that answer is known.
+`SpriteRenderer`. Neither game uses the framework Unity itself ships. Record
+the answer in the rule-applicability table the sibling docs ask for — most
+rows in this file, and in them, apply only once that answer is known.
 
 ## Sprite raster
 
@@ -62,15 +61,23 @@ as a colour or brightness fault — one sprite unexpectedly drawing over, and
 dimming, another — rather than as an ordering fault, so it gets misfiled as
 a shader problem.
 
-Core Keeper 1.2.1.4's `SpriteRenderer` UI does not lean on that tie-break at
-all: it stacks entirely through explicit per-renderer sorting orders — a
-`SpriteMask` clip range of 40–55, a popup band of 56–63, individual
-overrides down to a single footer element pinned below both — so an
-element's place is a number authored in the prefab, not a position along an
-axis. Cities: Skylines 1 sidesteps the mechanism a different way: since its
-UI carries zero `SpriteRenderer` references, this camera setting governs
-only the game world's transparent sprites and has no say over UI stacking
-at all — that is purely `ColossalFramework.UI`'s own ordering model.
+Core Keeper 1.2.1.4's `SpriteRenderer` UI uses **both** mechanisms, for two
+different jobs — and reading it as one is the trap. Explicit per-renderer
+sorting orders carry mask clipping: a `SpriteMask` custom range of 40–55, a
+popup band of 56–63 above it, individual overrides down to a single footer
+element pinned below both, and a renderer is clipped only when its order
+falls inside a mask's range. Front-to-back among transparent sprites is
+decided by the camera's sort axis on Z instead — which is why an element
+raised to `sortingOrder = 9999` there was still drawn behind chrome sitting
+at `z <= 0`, and the fix was pushing the chrome back in the prefab rather
+than raising the order further. So in that game a sorting order answers
+"which mask clips this" and Z answers "what is in front", which makes an
+equal absolute Z between two elements exactly the collision
+`raster-and-scaling.md` records as its dimming instance. Cities: Skylines 1
+sidesteps the mechanism a different way: since its UI carries zero
+`SpriteRenderer` references, this camera setting governs only the game
+world's transparent sprites and has no say over UI stacking at all — that is
+purely `ColossalFramework.UI`'s own ordering model.
 
 ## Serialized data
 
