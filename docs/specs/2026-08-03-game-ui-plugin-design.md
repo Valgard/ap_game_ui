@@ -180,11 +180,13 @@ name: game-ui-design
 description: Use when the UI's form is yours to set — a new game, your own shipped
   game's interface (maintenance, a platform port, a new language), or a mod/overhaul
   that deliberately replaces a host game's interface with a visual language of its
-  own. Covers aesthetic direction, typography and layout for HUD, menus, inventory,
-  dialogue and onboarding, plus the game-specific constraint layer (controller focus
-  traversal, diegetic layering, readability under motion, safe areas, pixel raster,
-  localization in fixed boxes). NOT for UI that must blend into someone else's game
-  — use game-ui-modding instead.
+  own. Also the default when a brief names a game and a UI surface without saying who
+  owns the form: "HUD for a space game", "inventory screen", "settings menu". Covers
+  aesthetic direction, typography and layout for HUD, menus, inventory, dialogue and
+  onboarding, plus the game-specific constraint layer (controller focus traversal,
+  diegetic layering, readability under motion, safe areas, pixel raster, localization
+  in fixed boxes). NOT for UI that must blend into someone else's game — use
+  game-ui-modding instead.
 ```
 
 ```yaml
