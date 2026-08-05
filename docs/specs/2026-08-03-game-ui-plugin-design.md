@@ -181,7 +181,7 @@ description: Use when the UI's form is yours to set — a new game, your own shi
   game's interface (maintenance, a platform port, a new language), or a mod/overhaul
   that deliberately replaces a host game's interface with a visual language of its
   own. Also the default when a brief names a game and a UI surface without saying who
-  owns the form: "HUD for a space game", "inventory screen", "settings menu". Covers
+  owns the form — "HUD for a space game", "inventory screen", "settings menu". Covers
   aesthetic direction, typography and layout for HUD, menus, inventory, dialogue and
   onboarding, plus the game-specific constraint layer (controller focus traversal,
   diegetic layering, readability under motion, safe areas, pixel raster, localization
@@ -651,7 +651,7 @@ A misrouted prompt is a description defect, not a user error.
 
 ## Scope
 
-- The two skills are **not** the same size. `game-ui-design` 120–**165** lines;
+- The two skills are **not** the same size. `game-ui-design` 120–**170** lines;
   `game-ui-modding` 170–200 — the gate's binding half (rule, checklist, exit
   criteria) is ~60 lines and stays inline; its lookup half moved to
   `docs/verification-gate.md`. Both sit inside the observed house range (93–232).
@@ -659,9 +659,10 @@ A misrouted prompt is a description defect, not a user error.
   the 76-column wrap the mechanics files use, `verification-gate.md` is ~73 lines
   against its "~50" target while two files reported as *at* their ceiling merely wrap
   tightest. Treat the numbers as a guard against sprawl, not as a measurement: a
-  needed rule is never cut to defend one. The design ceiling was raised from 150 to
-  165 for exactly that reason — the four exit criteria had to go inline and the old
-  number was the only obstacle.
+  needed rule is never cut to defend one. The design ceiling moved twice for exactly
+  that reason: 150 → 165 so the four exit criteria could go inline, then 165 → 170 when
+  a measured routing defect needed two more description lines. Both times the number
+  was the only obstacle, which is the tell that the number was the wrong constraint.
 - `docs/` files 60–120 lines. Not uniform: `input-and-focus.md` carries two halves
   (controller focus *and* text entry / input capture) and will sit at the top of
   that range, `readability.md` at the bottom. Two exceptions, both reference rather
