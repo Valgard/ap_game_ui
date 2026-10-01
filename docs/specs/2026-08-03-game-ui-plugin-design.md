@@ -125,34 +125,68 @@ a reach it never had.
 
 ### D6 — Repository location
 
-`claude-plugins`, one repo carrying both the
-marketplace manifest and the plugin, via a relative `./plugins/<name>` source —
-the single-repo pattern.
+**Superseded on 2026-10-01.** This decision originally put the marketplace manifest
+and the plugin in one repo, `claude-plugins`, with a
+relative `./plugins/<name>` source — the single-repo pattern. That held
+while the marketplace carried exactly one plugin and both were edited together.
 
-Remote: `backup` on a self-hosted Git server. No GitHub
-`origin` for now; whether this becomes a public marketplace is an open question
-(see *Open questions*). The layout is identical either way, so the later move is
-`git remote add origin …` plus `/plugin marketplace add` — no restructuring.
+They are now two repositories, following the index-repo pattern
+instead, where the marketplace is an **index** and plugins live in their own repos:
+
+| | |
+|---|---|
+| plugin | repo `ap_game-ui` — `.claude-plugin/plugin.json` at the **root**, which is what `source: "url"` requires |
+| marketplace | repo `agent-plugins` — catalog only, no plugin content |
+
+What changed materially, beyond the paths:
+
+- **The source form.** A relative path cannot cross a repository boundary, so the
+  catalog entry became `{"source": "url", "url": "…/ap_game-ui.git", "ref": "<tag>"}`.
+- **The plugin gained a release notion.** In the single repo there was no version to
+  speak of: the catalog pointed at a path and whatever lay there was installed. The
+  `ref` now pins a tag, so the catalog and the plugin can move independently.
+- **The marketplace name stayed `valgard-plugins`** even though the repo is called
+  `agent-plugins`, because `agent-plugins` is already taken by another catalog
+  in this machine's marketplace namespace and `install <x>@agent-plugins` would be
+  ambiguous.
+
+Remote: `backup` on a self-hosted Git server. `/plugin marketplace add` rejects
+`ssh://host:port/…` as an invalid source format and the SCP short form cannot encode
+a port, so the HTTP clone URL is the only working remote form for a self-hosted Git host on a
+non-standard SSH port — see *Open questions* for the still-undecided GitHub question.
 
 ## Layout
 
+Two repositories since 2026-10-01 (see D6). The plugin repo:
+
 ```
-claude-plugins/
-├── .claude-plugin/marketplace.json     # "source": "./plugins/game-ui"
-└── plugins/game-ui/
-    ├── .claude-plugin/plugin.json      # name: game-ui, version: 0.1.0
-    ├── skills/
-    │   ├── game-ui-design/SKILL.md
-    │   └── game-ui-modding/SKILL.md
-    └── docs/
-        ├── input-and-focus.md
-        ├── readability.md
-        ├── raster-and-scaling.md
-        ├── localization.md
-        ├── verification-gate.md
-        ├── capturing-evidence.md
-        └── engines/unity.md
+ap_game-ui/
+├── .claude-plugin/plugin.json          # name: game-ui, version: 0.1.0 — at the ROOT
+├── skills/
+│   ├── game-ui-design/SKILL.md
+│   └── game-ui-modding/SKILL.md
+└── docs/
+    ├── input-and-focus.md
+    ├── readability.md
+    ├── raster-and-scaling.md
+    ├── localization.md
+    ├── verification-gate.md
+    ├── capturing-evidence.md
+    ├── engines/unity.md
+    └── specs/2026-08-03-game-ui-plugin-design.md   # this document
 ```
+
+The marketplace repo carries no plugin content — only the catalog that points here:
+
+```
+agent-plugins/
+└── .claude-plugin/marketplace.json     # name: valgard-plugins
+                                        # source: {url, ref} → ap_game-ui.git
+```
+
+`${CLAUDE_PLUGIN_ROOT}` resolves to the plugin repo's root, so every reference in the
+skills kept working unchanged across the split — the paths were always relative to
+that variable, never to the old monorepo.
 
 Invocation names become `game-ui:game-ui-design` and `game-ui:game-ui-modding`.
 The redundancy is deliberate — shorter names (`design`, `modding`) lose their
